@@ -1,2 +1,5 @@
 .idea
 .venv
+src/resources/accounts/
+src/resources/domains
+src/resources/account_stats.csv
