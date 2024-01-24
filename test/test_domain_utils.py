@@ -4,8 +4,8 @@ from unittest import TestCase
 
 import pytest
 
-from domain_utils import is_valid_domain, alphabetize_domains
-from models_email_account import EmailEngagement
+from models.email.engagement.email_engagement import EmailEngagement
+from utils.domain_utils import is_valid_domain, alphabetize_domains
 
 
 class TestDomainUtils(TestCase):

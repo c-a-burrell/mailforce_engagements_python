@@ -1,7 +1,7 @@
-from client_consts import CLIENT
-from date_utils import now
-from models_email_account import EmailAccount
-from models_message_role import MessageRoles
+from client.es import CLIENT
+from utils.date_utils import now
+from models.email.account.email_accounts import EmailAccount
+from models.message.message_roles_container import MessageRoles
 
 INDEX: str = 'search-shinobi-email'
 RUNTIME_STATS_INDEX: str = 'search-runtime-stats'

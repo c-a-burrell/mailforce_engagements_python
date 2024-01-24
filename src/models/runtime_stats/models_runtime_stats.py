@@ -1,5 +1,5 @@
-from models_domain import Domains
-from models_email_account import EmailAccounts
+from models.domain.domains import Domains
+from models.email.account.email_accounts import EmailAccounts
 
 
 class RuntimeStats:

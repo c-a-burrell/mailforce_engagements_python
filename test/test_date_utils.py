@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from date_utils import to_simple_date_string
+from utils.date_utils import to_simple_date_string
 
 
 class TestDateUtils(TestCase):

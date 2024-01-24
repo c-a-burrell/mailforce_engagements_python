@@ -1,13 +1,13 @@
 import os
 
-from date_utils import now
-from es_index_client import insert_account_stats, insert_runtime_stats, insert_account_interactions, \
+from utils.date_utils import now
+from client.es.index_client import insert_account_stats, insert_runtime_stats, insert_account_interactions, \
     insert_domains_stats, insert_message_roles
-from es_search_client import get_emails_by_account, search_accounts, get_message_roles, get_last_runtime_date
-from models_domain import Domains
-from models_email_account import EmailAccounts, EmailAccount
-from models_message_role import MessageRolesContainer
-from models_runtime_stats import RuntimeStats
+from client.es.search_client import get_emails_by_account, search_accounts, get_message_roles, get_last_runtime_date
+from models.domain import Domains
+from models.email.account.email_accounts import EmailAccounts, EmailAccount
+from models.message.message_roles_container import MessageRolesContainer
+from models.runtime_stats.models_runtime_stats import RuntimeStats
 
 RESOURCES_PATH = './resources'
 ACCOUNTS_PATH = f'{RESOURCES_PATH}/accounts'
@@ -80,7 +80,7 @@ def _get_accounts_from_es():
 
 
 def _write_to_local(email_accounts: EmailAccounts, domains: Domains, message_roles_container: MessageRolesContainer):
-    if WRITE_LOCAL_FILE:
+    if WRITE_LOCAL_FILES:
         for email_account in email_accounts.accounts:
             _write_account(email_account.account, email_account)
         _write_account_stats(email_accounts)

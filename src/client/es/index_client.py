@@ -1,11 +1,17 @@
 from elasticsearch import helpers
 
-from client_consts import CLIENT
-from date_utils import now
-from models_domain import Domains, Domain
-from models_email_account import EmailAccounts, EmailAccount, EmailEngagement, EmailMapping
-from models_message_role import MessageRolesContainer, MessageRole, MessageRoles
-from models_runtime_stats import RuntimeStats
+from client.es import CLIENT
+from models.domain.domain import Domain
+from models.domain.domains import Domains
+from models.email.account.email_account import EmailAccount
+from models.email.account.email_accounts import EmailAccounts
+from models.email.engagement.email_engagement import EmailEngagement
+from models.email.mapping.email_mapping import EmailMapping
+from models.message.message_role import MessageRole
+from models.message.message_roles import MessageRoles
+from models.message.message_roles_container import MessageRolesContainer
+from models.runtime_stats.models_runtime_stats import RuntimeStats
+from utils.date_utils import now
 
 ACCOUNTS_STAT_INDEX: str = 'search-accounts_statistics_simple'
 ACCOUNTS_ENGAGEMENTS_INDEX: str = 'search-accounts-engagements'

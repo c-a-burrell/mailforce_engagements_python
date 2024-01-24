@@ -1,6 +1,7 @@
-from date_utils import get_earliest_date, get_latest_date
-from hash_utils import deterministic_id
-from models_email_account import EmailEngagement, EmailMapping
+from models.email.engagement.email_engagement import EmailEngagement
+from models.email.mapping.email_mapping import EmailMapping
+from utils.date_utils import get_earliest_date, get_latest_date
+from utils.hash_utils import deterministic_id
 
 DOMAIN_CSV_HEADER: str = ('email_address,cc Email Count,from Email Count,to Email Count,First Contact Date,'
                           'Last Contact Date,Total Emails')
@@ -80,19 +81,3 @@ class Domain:
         rows: map = map(lambda email_mapping: email_mapping.to_csv_row(), self.email_mappings.values())
         return list(map(lambda row: f'{row}\n', [DOMAIN_CSV_HEADER, first_row] + list(rows)))
 
-
-class Domains:
-    """ Holds all the domains processed during the current run."""
-    def __init__(self):
-        self.domains: dict[str, Domain] = {}
-
-    def add_email(self, email: EmailEngagement):
-        """
-        Adds an Email instance to this Domains Instance. If this email belongs to a Domain that is not already present,
-        then a new Domain is created. Otherwise, the existing domain is updated.
-        :param email: Email to be added.
-        """
-        domain: str = email.domain
-        if domain not in self.domains:
-            self.domains[domain] = Domain(domain)
-        self.domains[domain].add_email(email)
