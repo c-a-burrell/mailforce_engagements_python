@@ -1,0 +1,20 @@
+{
+    "from": 0,
+    "size": 10000,
+    "query": {
+         "bool":{
+             "must": [
+                 {"range":{
+                     "date":{
+                         "gte": "2023-01-01",
+                         "lte": "2024-01-03",
+                         "format": "strict_date_optional_time"
+                     }
+                 }
+                 }
+             ]
+    }
+    },
+    "fields": ["messageId", "cc.address", "to.address", "from.address"],
+    "_source": false
+}

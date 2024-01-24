@@ -13,6 +13,7 @@ RESOURCES_PATH = './resources'
 ACCOUNTS_PATH = f'{RESOURCES_PATH}/accounts'
 DOMAINS_PATH = f'{RESOURCES_PATH}/domains'
 USE_ACCOUNTS_FILE = False
+WRITE_LOCAL_FILES = False
 
 
 def main(event, context):
@@ -79,11 +80,12 @@ def _get_accounts_from_es():
 
 
 def _write_to_local(email_accounts: EmailAccounts, domains: Domains, message_roles_container: MessageRolesContainer):
-    for email_account in email_accounts.accounts:
-        _write_account(email_account.account, email_account)
-    _write_account_stats(email_accounts)
-    _write_domains_file(domains)
-    _write_message_roles(message_roles_container)
+    if WRITE_LOCAL_FILE:
+        for email_account in email_accounts.accounts:
+            _write_account(email_account.account, email_account)
+        _write_account_stats(email_accounts)
+        _write_domains_file(domains)
+        _write_message_roles(message_roles_container)
 
 
 def _write_to_es(email_accounts: EmailAccounts, domains: Domains, message_roles_container: MessageRolesContainer):

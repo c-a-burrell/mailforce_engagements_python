@@ -1,0 +1,39 @@
+{
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 1,
+      "relation": "eq"
+    },
+    "max_score": 10.013656,
+    "hits": [
+      {
+        "_index": "shinobi-email",
+        "_id": "kunai-ruan:AAAAAQAACKM",
+        "_score": 10.013656,
+        "fields": {
+          "to.address": [
+            "ruan@kunaico.com"
+          ],
+          "subject": [
+            "Canceled event with note: Capital One Scala: Matt Fellows - Dale Angus @ Tue Sep 21, 2021 2pm - 2:45pm (PDT) (ruan@kunaico.com)"
+          ],
+          "from.address": [
+            "anita.wong@capitalone.com"
+          ],
+          "cc.address" : ["charles.burrell@kunaico.com"],
+          "messageId": ["<000000000000bd107805cc755de9@google.com>"],
+          "text.plain": ["Text Plain"],
+          "text.html": ["Text HTML"]
+        }
+      }
+    ]
+  }
+}

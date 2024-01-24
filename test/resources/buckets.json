@@ -1,0 +1,479 @@
+{
+  "hits": {
+    "hits": [
+      {
+        "sort": [
+          "2023-12-21T14:00:00.000Z"
+        ],
+        "_score": null,
+        "_id": "kunai-sandeep:AAAAAQAEY_A",
+        "_index": "shinobi-email"
+      },
+      {
+        "sort": [
+          "2023-12-21T05:08:02.000Z"
+        ],
+        "_score": null,
+        "_id": "kunai-sandeep:AAAAAQAEY8A",
+        "_index": "shinobi-email"
+      },
+      {
+        "sort": [
+          "2023-12-13T16:31:38.000Z"
+        ],
+        "_score": null,
+        "_id": "kunai-sandeep:AAAAAQAEWiY",
+        "_index": "shinobi-email"
+      },
+      {
+        "sort": [
+          "2023-12-13T14:00:00.000Z"
+        ],
+        "_score": null,
+        "_id": "kunai-sandeep:AAAAAQAEWeA",
+        "_index": "shinobi-email"
+      },
+      {
+        "sort": [
+          "2023-12-12T13:45:16.000Z"
+        ],
+        "_score": null,
+        "_id": "kunai-nick:AAAAAQAA8vk",
+        "_index": "shinobi-email"
+      },
+      {
+        "sort": [
+          "2023-12-12T13:45:16.000Z"
+        ],
+        "_score": null,
+        "_id": "kunai-sandeep:AAAAAQAEWFg",
+        "_index": "shinobi-email"
+      },
+      {
+        "sort": [
+          "2023-12-11T17:22:11.000Z"
+        ],
+        "_score": null,
+        "_id": "kunai-nick:AAAAAQAA8qg",
+        "_index": "shinobi-email"
+      },
+      {
+        "sort": [
+          "2023-12-11T17:22:11.000Z"
+        ],
+        "_score": null,
+        "_id": "kunai-sandeep:AAAAAQAEVyM",
+        "_index": "shinobi-email"
+      },
+      {
+        "sort": [
+          "2023-12-08T21:28:40.000Z"
+        ],
+        "_score": null,
+        "_id": "kunai-sandeep:AAAAAQAEVOk",
+        "_index": "shinobi-email"
+      },
+      {
+        "sort": [
+          "2023-12-08T21:25:42.000Z"
+        ],
+        "_score": null,
+        "_id": "kunai-ruan:AAAAAQABGHc",
+        "_index": "shinobi-email"
+      }
+    ],
+    "total": {
+      "relation": "eq",
+      "value": 1901
+    },
+    "max_score": null
+  },
+  "_shards": {
+    "successful": 20,
+    "failed": 0,
+    "skipped": 19,
+    "total": 20
+  },
+  "took": 22,
+  "aggregations": {
+    "group_by_cc": {
+      "buckets": [
+        {
+          "min_date": {
+            "value_as_string": "2022-12-12T13:00:00.000Z",
+            "value": 1670850000000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-12T13:45:16.000Z",
+            "value": 1702388716000
+          },
+          "key": "talent.team@kunaico.com",
+          "doc_count": 856
+        },
+        {
+          "min_date": {
+            "value_as_string": "2022-08-26T23:34:02.000Z",
+            "value": 1661556842000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-21T14:00:00.000Z",
+            "value": 1703167200000
+          },
+          "key": "samantha@kunaico.com",
+          "doc_count": 801
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-03-06T22:28:28.000Z",
+            "value": 1678141708000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-06T23:41:58.000Z",
+            "value": 1701906118000
+          },
+          "key": "ruan@kunaico.com",
+          "doc_count": 474
+        },
+        {
+          "min_date": {
+            "value_as_string": "2022-08-26T23:34:02.000Z",
+            "value": 1661556842000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-21T14:00:00.000Z",
+            "value": 1703167200000
+          },
+          "key": "ss@kunaico.com",
+          "doc_count": 417
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-03-03T00:48:15.000Z",
+            "value": 1677804495000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-05T14:59:17.000Z",
+            "value": 1701788357000
+          },
+          "key": "joanna@kunaico.com",
+          "doc_count": 291
+        },
+        {
+          "min_date": {
+            "value_as_string": "2022-11-04T20:47:00.000Z",
+            "value": 1667594820000
+          },
+          "max_date": {
+            "value_as_string": "2023-10-18T16:02:42.000Z",
+            "value": 1697644962000
+          },
+          "key": "sebastian@kunaico.com",
+          "doc_count": 278
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-03-02T19:42:51.000Z",
+            "value": 1677786171000
+          },
+          "max_date": {
+            "value_as_string": "2023-09-06T16:44:26.000Z",
+            "value": 1694018666000
+          },
+          "key": "steven.norwood@capitalone.com",
+          "doc_count": 176
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-03-02T19:42:51.000Z",
+            "value": 1677786171000
+          },
+          "max_date": {
+            "value_as_string": "2023-05-09T21:15:09.000Z",
+            "value": 1683666909000
+          },
+          "key": "graeme.crawford@capitalone.com",
+          "doc_count": 174
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-03-02T19:42:51.000Z",
+            "value": 1677786171000
+          },
+          "max_date": {
+            "value_as_string": "2023-05-09T21:15:09.000Z",
+            "value": 1683666909000
+          },
+          "key": "rupa@kunaico.com",
+          "doc_count": 171
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-04-04T21:35:43.000Z",
+            "value": 1680644143000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-05T14:59:17.000Z",
+            "value": 1701788357000
+          },
+          "key": "clientonboarding@kunaico.com",
+          "doc_count": 141
+        }
+      ],
+      "sum_other_doc_count": 3103,
+      "doc_count_error_upper_bound": 0
+    },
+    "group_by_to": {
+      "buckets": [
+        {
+          "min_date": {
+            "value_as_string": "2022-08-29T20:00:00.000Z",
+            "value": 1661803200000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-13T14:00:00.000Z",
+            "value": 1702476000000
+          },
+          "key": "samantha@kunaico.com",
+          "doc_count": 677
+        },
+        {
+          "min_date": {
+            "value_as_string": "2022-10-21T15:19:27.000Z",
+            "value": 1666365567000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-13T16:31:38.000Z",
+            "value": 1702485098000
+          },
+          "key": "ss@kunaico.com",
+          "doc_count": 154
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-02-03T21:02:33.000Z",
+            "value": 1675458153000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-04T21:52:56.000Z",
+            "value": 1701726776000
+          },
+          "key": "ruan@kunaico.com",
+          "doc_count": 149
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-03-06T21:31:51.000Z",
+            "value": 1678138311000
+          },
+          "max_date": {
+            "value_as_string": "2023-10-31T20:27:42.000Z",
+            "value": 1698784062000
+          },
+          "key": "bhagavathkumar.k@capitalone.com",
+          "doc_count": 89
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-03-23T14:36:37.000Z",
+            "value": 1679582197000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-06T23:41:58.000Z",
+            "value": 1701906118000
+          },
+          "key": "joanna@kunaico.com",
+          "doc_count": 83
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-03-03T00:48:15.000Z",
+            "value": 1677804495000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-05T14:59:17.000Z",
+            "value": 1701788357000
+          },
+          "key": "bonnie.mcgovern@wexinc.com",
+          "doc_count": 66
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-02-03T15:49:12.000Z",
+            "value": 1675439352000
+          },
+          "max_date": {
+            "value_as_string": "2023-10-10T15:28:00.000Z",
+            "value": 1696951680000
+          },
+          "key": "brittany@kunaico.com",
+          "doc_count": 61
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-08-18T15:18:01.000Z",
+            "value": 1692371881000
+          },
+          "max_date": {
+            "value_as_string": "2023-11-01T20:07:22.000Z",
+            "value": 1698869242000
+          },
+          "key": "rikus.vanzyl@wexinc.com",
+          "doc_count": 42
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-06-22T13:37:27.000Z",
+            "value": 1687441047000
+          },
+          "max_date": {
+            "value_as_string": "2023-10-10T14:51:32.000Z",
+            "value": 1696949492000
+          },
+          "key": "jonathan.krosschell@wexinc.com",
+          "doc_count": 39
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-05-11T16:52:07.000Z",
+            "value": 1683823927000
+          },
+          "max_date": {
+            "value_as_string": "2023-11-30T18:29:12.000Z",
+            "value": 1701368952000
+          },
+          "key": "natasa.trajkovic@wexinc.com",
+          "doc_count": 29
+        }
+      ],
+      "sum_other_doc_count": 989,
+      "doc_count_error_upper_bound": 0
+    },
+    "group_by_from": {
+      "buckets": [
+        {
+          "min_date": {
+            "value_as_string": "2022-09-14T16:07:18.000Z",
+            "value": 1663171638000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-13T16:31:38.000Z",
+            "value": 1702485098000
+          },
+          "key": "samantha@kunaico.com",
+          "doc_count": 423
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-01-26T19:05:37.000Z",
+            "value": 1674759937000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-12T13:45:16.000Z",
+            "value": 1702388716000
+          },
+          "key": "talent.team@kunaico.com",
+          "doc_count": 319
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-02-03T15:20:00.000Z",
+            "value": 1675437600000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-04T18:48:54.000Z",
+            "value": 1701715734000
+          },
+          "key": "ruan@kunaico.com",
+          "doc_count": 72
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-03-21T16:48:47.000Z",
+            "value": 1679417327000
+          },
+          "max_date": {
+            "value_as_string": "2023-12-06T23:40:36.000Z",
+            "value": 1701906036000
+          },
+          "key": "joanna@kunaico.com",
+          "doc_count": 66
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-03-02T15:34:13.000Z",
+            "value": 1677771253000
+          },
+          "max_date": {
+            "value_as_string": "2023-11-15T18:55:34.000Z",
+            "value": 1700074534000
+          },
+          "key": "venkatesh.joshi@wexinc.com",
+          "doc_count": 54
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-02-07T17:02:43.000Z",
+            "value": 1675789363000
+          },
+          "max_date": {
+            "value_as_string": "2023-11-14T23:08:02.000Z",
+            "value": 1700003282000
+          },
+          "key": "brittany@kunaico.com",
+          "doc_count": 52
+        },
+        {
+          "min_date": {
+            "value_as_string": "2022-10-28T21:18:43.000Z",
+            "value": 1666991923000
+          },
+          "max_date": {
+            "value_as_string": "2023-10-27T03:13:11.000Z",
+            "value": 1698376391000
+          },
+          "key": "ss@kunaico.com",
+          "doc_count": 47
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-03-20T16:30:23.000Z",
+            "value": 1679329823000
+          },
+          "max_date": {
+            "value_as_string": "2023-10-20T02:57:16.000Z",
+            "value": 1697770636000
+          },
+          "key": "bhagavathkumar.k@capitalone.com",
+          "doc_count": 45
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-03-23T14:22:55.000Z",
+            "value": 1679581375000
+          },
+          "max_date": {
+            "value_as_string": "2023-05-16T21:50:17.000Z",
+            "value": 1684273817000
+          },
+          "key": "bonnie.mcgovern@wexinc.com",
+          "doc_count": 45
+        },
+        {
+          "min_date": {
+            "value_as_string": "2023-04-25T17:24:14.000Z",
+            "value": 1682443454000
+          },
+          "max_date": {
+            "value_as_string": "2023-10-05T12:34:37.000Z",
+            "value": 1696509277000
+          },
+          "key": "kelsey.goldsmith@wexinc.com",
+          "doc_count": 43
+        }
+      ],
+      "sum_other_doc_count": 735,
+      "doc_count_error_upper_bound": 0
+    }
+  },
+  "timed_out": false
+}

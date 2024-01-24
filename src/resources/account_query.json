@@ -1,0 +1,42 @@
+{
+    "aggs":{
+        "group_by_from":
+        {
+            "terms":{"field": "from.address", "size": 10000},
+            "aggs":{
+                "max_date": {"max":{"field":"date"}},
+                "min_date": {"min":{"field":"date"}}
+            }
+        },
+        "group_by_to":{
+            "terms":{"field": "to.address", "size": 10000},
+            "aggs":{
+                "max_date": {"max":{"field":"date"}},
+                "min_date": {"min":{"field":"date"}}
+            }
+        },
+        "group_by_cc":{
+            "terms":{"field": "cc.address", "size": 10000},
+            "aggs":{
+                "max_date": {"max":{"field":"date"}},
+                "min_date": {"min":{"field":"date"}}
+            }
+        }
+    },
+    "query": {
+         "bool":{
+             "must": [
+                 {"term": {"account" :  "kunai-sandeep"}},
+                 {"range":{
+                     "date":{
+                         "gte": "2023-01-01",
+                         "lte": "2024-01-03",
+                         "format": "strict_date_optional_time"
+                     }
+                 }
+                 }
+             ]
+    }
+    },
+    "_source": false
+}
