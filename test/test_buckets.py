@@ -40,6 +40,15 @@ class TestBuckets(TestCase):
             csv_rows = buckets.to_csv_rows()
         self.assertEqual(12, len(csv_rows))
 
+    def  test_id(self):
+        with open('./resources/buckets.json', 'r') as f:
+            input_str = f.read()
+            input_json = json.loads(input_str)
+            buckets_1 = EmailAccount(input_json, 'samantha@kunaico.com')
+            buckets_2 =  EmailAccount(input_json, 'samantha@kunaico.com')
+            print(buckets_1.id())
+            self.assertEqual(buckets_2.id(), buckets_1.id())
+
 
 
 

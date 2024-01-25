@@ -10,7 +10,7 @@ from models.email.mapping.email_mapping import EmailMapping
 from models.message.message_role import MessageRole
 from models.message.message_roles import MessageRoles
 from models.message.message_roles_container import MessageRolesContainer
-from models.runtime_stats.models_runtime_stats import RuntimeStats
+from models.runtime_stats.runtime_stats import RuntimeStats
 from utils.date_utils import now
 
 ACCOUNTS_STAT_INDEX: str = 'search-accounts_statistics_simple'
@@ -123,7 +123,8 @@ def insert_message_roles(message_roles_container: MessageRolesContainer):
             'doc': {
                 'message_id': message_roles.message_id,
                 'message_roles': list(map(message_role_json,message_roles.roles)),
-                'account': message_roles.account
+                'account': message_roles.account,
+                'date': RIGHT_NOW
             }
         }
 

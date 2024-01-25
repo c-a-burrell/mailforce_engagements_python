@@ -7,7 +7,7 @@ from client.es.index_client import insert_account_stats, insert_runtime_stats, i
 from client.es.search_client import get_emails_by_account, search_accounts, get_message_roles, get_last_runtime_date
 from models.email.account.email_accounts import EmailAccounts, EmailAccount
 from models.message.message_roles_container import MessageRolesContainer
-from models.runtime_stats.models_runtime_stats import RuntimeStats
+from models.runtime_stats.runtime_stats import RuntimeStats
 
 RESOURCES_PATH = './resources'
 ACCOUNTS_PATH = f'{RESOURCES_PATH}/accounts'
