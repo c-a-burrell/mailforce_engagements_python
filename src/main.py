@@ -14,13 +14,20 @@ ACCOUNTS_PATH = f'{RESOURCES_PATH}/accounts'
 DOMAINS_PATH = f'{RESOURCES_PATH}/domains'
 USE_ACCOUNTS_FILE = False
 WRITE_LOCAL_FILES = False
+FROM_DATE_KEY = 'from_date'
+ACCOUNTS_KEY = 'backfill_accounts'
+EXCLUDE_ACCOUNTS_KEY = 'exclude_accounts'
 
 
 def main(event, context):
     response = _get_response(event, context)
     try:
-        from_date = event['from_date'] if 'from_date' in event else None
-        runtime_stats = _collect(from_date)
+        from_date = event.get(FROM_DATE_KEY)
+        backfill_accounts = event.getACCOUNTS_KEY
+        excluded_accounts = event.get(EXCLUDE_ACCOUNTS_KEY)
+        runtime_stats = _collect(from_date=from_date,
+                                 backfill_accounts=backfill_accounts,
+                                 excluded_accounts=excluded_accounts)
         response['runtime_stats'] = str(runtime_stats)
     except Exception as e:
         response['error'] = str(e)
@@ -46,11 +53,17 @@ def _get_response(event, context):
     }
 
 
-def _collect(from_date: str = None):
+def _collect(from_date: str = None,
+             backfill_accounts: list[str] = None,
+             excluded_accounts: list[str] = None):
     last_runtime_date = from_date if from_date else get_last_runtime_date()
     print(f'Using last runtime date of {last_runtime_date}')
-    accounts = _get_accounts_from_file() if USE_ACCOUNTS_FILE else _get_accounts_from_es()
-    email_accounts = _get_email_accounts(last_runtime_date, accounts)
+    accounts = backfill_accounts if backfill_accounts \
+        else _get_accounts_from_file() if USE_ACCOUNTS_FILE \
+        else _get_accounts_from_es()
+    filtered_accounts = list(filter(lambda account: account not in excluded_accounts, accounts)) if excluded_accounts \
+        else accounts
+    email_accounts = _get_email_accounts(last_runtime_date, filtered_accounts)
     domains = _get_domains(email_accounts)
     message_roles = get_message_roles()
     message_roles_container = MessageRolesContainer(message_roles)
@@ -139,4 +152,4 @@ def _write_message_roles(message_roles_container: MessageRolesContainer):
 
 
 if __name__ == "__main__":
-    _collect(None)
+    _collect(None, None)

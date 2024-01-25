@@ -74,6 +74,18 @@ specified as follows:
 ```json
 {"from_date": "2024-01-01T00:00"}
 ```
+Also, if it is desired that only certain accounts be considered (useful in  the case of backfilling individual accounts),
+then they need to be provided:
+```json
+{
+  "from_date": "2024-01-01T00:00",
+  "backfilled_accounts": ["kunai-jim", "kunai-joe"]
+}
+```
+Similarly, if we want to *exclude* accounts:
+```json
+{"exclude_accounts": ["kunai-jim", "kunai-joe"]}
+```
 ## Notes
 * Each top-level object is stored in its relevant index with a deterministically generated identifier that
 so that the same Email Address Engagement, Domain Level Interaction or Individual Email Message Relationship
