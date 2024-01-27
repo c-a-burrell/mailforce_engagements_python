@@ -1,8 +1,8 @@
 import json
 from unittest import TestCase
 
-from models.email.account.email_accounts import EmailAccount
-from models.email.engagement.email_engagement import EmailEngagement
+from mailforce.models import EmailAccount
+from mailforce.models import EmailEngagement
 
 
 class TestBuckets(TestCase):

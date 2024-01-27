@@ -4,7 +4,7 @@ from unittest import TestCase
 
 import pytest
 
-from models.email.engagement.email_engagement import EmailEngagement
+from mailforce.models import EmailEngagement
 from utils.domain_utils import is_valid_domain, alphabetize_domains
 
 
