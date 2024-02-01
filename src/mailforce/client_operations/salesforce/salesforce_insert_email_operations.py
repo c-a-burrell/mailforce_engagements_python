@@ -2,10 +2,26 @@ import json
 
 from mailforce import MailforceConfigurations, CONTENT_JSON
 from mailforce.client.sf.salesforce_client import issue_request
+from mailforce.client_operations.salesforce import REDIS
 from mailforce.models.salesforce.insert_email_response import InsertEmailResponse
 
 EMAIL_API_VERSION: str = ''
 EMAIL_API_MODEL_NAME: str = ''
+REDIS_EMAIL_CACHE: str = 'emailIdCache'
+
+
+def preprocess_emails(email_jsons: dict[str, any]) -> list[dict[str, any]]:
+    """
+    :param email_jsons: Email JSONS from ES
+    :return: All the email JSONS that have not been previously cached
+    """
+    def email_is_not_cached(email_json: dict[str, any], cached_ids: list[str]) -> bool:
+        email_id = email_json.get('messageId', None)
+        return email_id not in cached_ids
+
+    cached_ids: list[str] = REDIS.hkeys(name=REDIS_EMAIL_CACHE)
+    emails = email_jsons['hits']['hits']
+    return list(filter(lambda x: email_is_not_cached(x, cached_ids), emails))
 
 
 def insert_email(email_json: dict[str, any], config: MailforceConfigurations, attempt: int = 1) -> InsertEmailResponse:
@@ -26,3 +42,14 @@ def insert_email(email_json: dict[str, any], config: MailforceConfigurations, at
     success: bool = response.get('success', False)
     return InsertEmailResponse(response_json=response, email_json=email_json) if success \
         else insert_email(email_json, config, attempt + 1)
+
+
+def update_cache(insert_email_response: InsertEmailResponse) -> bool:
+    """
+    :param insert_email_response: Object that holds the response from Salesforce as well as Email Relationship mappings for
+            further processing.
+    :return: Whether update was successful
+    """
+    return REDIS.hset(name=REDIS_EMAIL_CACHE,
+                      key=insert_email_response.message_id,
+                      value=insert_email_response.salesforce_id) > 0

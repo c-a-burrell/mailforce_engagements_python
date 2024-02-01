@@ -10,6 +10,18 @@ MAX_DATE: str = '2023-12-30'
 BATCH_SIZE: int = 2500
 
 
+def get_emails_by_account(account: str, from_date_inclusive: str = None, to_date_inclusive: str = None) -> list[
+    dict[str, any]]:
+    """
+    Returns the full content of the emails for a specific account.
+    :param account:
+    :param from_date_inclusive: The earliest data (inclusive).
+    :param to_date_inclusive: The latest date (inclusive). If this is not specified, then the current date is used.
+    :return: The full content of the emails from Elasticsearch.
+    """
+    return _search_emails_by_account(account, from_date_inclusive, to_date_inclusive)
+
+
 def get_last_runtime_date():
     """
     :return: Last runtime date if present else None
@@ -26,7 +38,7 @@ def get_last_runtime_date():
         return None
 
 
-def get_emails_by_account(account: str, last_runtime_date: str = None) -> EmailAccount:
+def get_aggregated_emails_by_account(account: str, last_runtime_date: str = None) -> EmailAccount:
     """ Gets all the aggregated `to`, `from` and `cc` email addresses for the account in question.
     If no results are returned, then an alternate index will be searched.
     :param account:
@@ -34,8 +46,8 @@ def get_emails_by_account(account: str, last_runtime_date: str = None) -> EmailA
     If not present, then all results in the index up until the present date will be fetched.
     :return: EmailAccount
     """
-    results = _search_emails_by_account(account=account,
-                                        last_runtime_date=last_runtime_date)
+    results = _search_aggregated_emails_by_account(account=account,
+                                                   last_runtime_date=last_runtime_date)
     hits = results['hits']['hits']
     master_email_account: EmailAccount = None
     while len(hits) > 0:
@@ -53,9 +65,9 @@ def get_emails_by_account(account: str, last_runtime_date: str = None) -> EmailA
             master_email_account.append_emails(email_account)
         last_index = len(hits) - 1
         search_after = hits[last_index]['sort'][0]
-        results = _search_emails_by_account(account=account,
-                                            last_runtime_date=last_runtime_date,
-                                            search_after=search_after)
+        results = _search_aggregated_emails_by_account(account=account,
+                                                       last_runtime_date=last_runtime_date,
+                                                       search_after=search_after)
         hits = results['hits']['hits']
     return master_email_account
 
@@ -112,7 +124,40 @@ def _search_message_roles(last_runtime_date, search_after=None):
     return _search(query, INDEX, search_after)
 
 
-def _search_emails_by_account(account, last_runtime_date, search_after=None):
+def _search_emails_by_account(account, from_date_inclusive=None, to_date_inclusive=None, search_after=None):
+    def _date_aggregation():
+        date_aggregation = {
+            'format': "strict_date_optional_time"
+        }
+        if from_date_inclusive:
+            date_aggregation['gte'] = from_date_inclusive
+        if to_date_inclusive:
+            date_aggregation['lte'] = to_date_inclusive
+        else:
+            date_aggregation['lte'] = now()
+        return date_aggregation
+
+    query = {
+        'size': BATCH_SIZE,
+        'query': {
+            'bool': {
+                'must': [
+                    {'term': {'account': account}},
+                    {'range': {'date': _date_aggs()}}
+                ]
+            }
+        },
+        "sort": [
+            {"date": {
+                "order": "asc"
+            }}
+        ],
+        '_source': 'true'
+    }
+    return _search(query, INDEX, search_after)
+
+
+def _search_aggregated_emails_by_account(account, last_runtime_date, search_after=None):
     def group_by_aggs(field):
         return {
             'terms': {'field': field, 'size': 10000},

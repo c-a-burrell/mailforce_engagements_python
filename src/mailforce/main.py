@@ -4,7 +4,7 @@ from mailforce import RESOURCES_PATH
 from mailforce.client_operations.es.es_index_operations import insert_account_stats, insert_account_interactions, \
     insert_domains_stats, insert_message_roles, insert_runtime_stats
 from mailforce.client_operations.es.es_search_operations import get_last_runtime_date, get_message_roles, \
-    get_emails_by_account, search_accounts
+    get_aggregated_emails_by_account, search_accounts
 from mailforce.models.domain.domains import Domains
 from mailforce.models.email.account.email_account import EmailAccount
 from mailforce.models.email.account.email_accounts import EmailAccounts
@@ -80,7 +80,7 @@ def _collect(from_date: str = None,
 def _get_email_accounts(last_runtime_date: str, accounts: list[str]) -> EmailAccounts:
     email_accounts = EmailAccounts()
     for account in accounts:
-        email_account = get_emails_by_account(account=account, last_runtime_date=last_runtime_date)
+        email_account = get_aggregated_emails_by_account(account=account, last_runtime_date=last_runtime_date)
         email_accounts.add_account(email_account)
     return email_accounts
 
