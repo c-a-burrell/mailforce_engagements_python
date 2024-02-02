@@ -10,8 +10,8 @@ MAX_DATE: str = '2023-12-30'
 BATCH_SIZE: int = 2500
 
 
-def get_emails_by_account(account: str, from_date_inclusive: str = None, to_date_inclusive: str = None) -> list[
-    dict[str, any]]:
+def get_emails_by_account(account: str, from_date_inclusive: str = None, to_date_inclusive: str = None) \
+        -> list[dict[str, any]]:
     """
     Returns the full content of the emails for a specific account.
     :param account:
@@ -19,7 +19,11 @@ def get_emails_by_account(account: str, from_date_inclusive: str = None, to_date
     :param to_date_inclusive: The latest date (inclusive). If this is not specified, then the current date is used.
     :return: The full content of the emails from Elasticsearch.
     """
-    return _search_emails_by_account(account, from_date_inclusive, to_date_inclusive)
+    results: list[dict[str,any]] = list()
+    all_results: list[dict[str, any]] = _search_emails_by_account(account, from_date_inclusive, to_date_inclusive)
+    for result in all_results:
+        results.append(result['hits']['hits'])
+    return results
 
 
 def get_last_runtime_date():
@@ -52,7 +56,6 @@ def get_aggregated_emails_by_account(account: str, last_runtime_date: str = None
     master_email_account: EmailAccount = None
     while len(hits) > 0:
         print(f'Processing {len(hits)} email search results for account {account}')
-        print(results.keys())
         for agg in results['aggregations'].keys():
             remaining_docs = results['aggregations'][agg]['sum_other_doc_count']
             if remaining_docs and remaining_docs > 0:
@@ -143,7 +146,7 @@ def _search_emails_by_account(account, from_date_inclusive=None, to_date_inclusi
             'bool': {
                 'must': [
                     {'term': {'account': account}},
-                    {'range': {'date': _date_aggs()}}
+                    {'range': {'date': _date_aggregation()}}
                 ]
             }
         },

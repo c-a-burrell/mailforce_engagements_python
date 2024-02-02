@@ -16,12 +16,17 @@ def preprocess_emails(email_jsons: dict[str, any]) -> list[dict[str, any]]:
     :return: All the email JSONS that have not been previously cached
     """
     def email_is_not_cached(email_json: dict[str, any], cached_ids: list[str]) -> bool:
+        """
+        :param email_json:
+        :param cached_ids: All the IDs that have been cached in Redis.
+        :return: True if this email Id is *not* cached.
+        """
         email_id = email_json.get('messageId', None)
         return email_id not in cached_ids
 
-    cached_ids: list[str] = REDIS.hkeys(name=REDIS_EMAIL_CACHE)
+    cached_ids_from_redis: list[str] = REDIS.hkeys(name=REDIS_EMAIL_CACHE)
     emails = email_jsons['hits']['hits']
-    return list(filter(lambda x: email_is_not_cached(x, cached_ids), emails))
+    return list(filter(lambda x: email_is_not_cached(x, cached_ids_from_redis), emails))
 
 
 def insert_email(email_json: dict[str, any], config: MailforceConfigurations, attempt: int = 1) -> InsertEmailResponse:
