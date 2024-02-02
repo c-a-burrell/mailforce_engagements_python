@@ -5,6 +5,7 @@ from mailforce.client_operations.es.es_index_operations import insert_account_st
     insert_domains_stats, insert_message_roles, insert_runtime_stats
 from mailforce.client_operations.es.es_search_operations import get_last_runtime_date, get_message_roles, \
     get_aggregated_emails_by_account, search_accounts
+from mailforce.local_setup import setup
 from mailforce.models.domain.domains import Domains
 from mailforce.models.email.account.email_account import EmailAccount
 from mailforce.models.email.account.email_accounts import EmailAccounts
@@ -156,4 +157,5 @@ def _write_message_roles(message_roles_container: MessageRolesContainer):
 
 
 if __name__ == "__main__":
+    setup()
     _collect(None, None)

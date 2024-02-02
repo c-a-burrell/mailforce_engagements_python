@@ -18,3 +18,4 @@ class MailforceConfigurations:
         self.sf_domain: str = os.environ['SF_DOMAIN']
         self.sf_refresh_token: str = os.environ['SF_REFRESH_TOKEN']
         self.sf_client_id: str = os.environ['SF_CLIENT_ID']
+        self.elastic_password = os.environ['ELASTIC_PASSWORD']
