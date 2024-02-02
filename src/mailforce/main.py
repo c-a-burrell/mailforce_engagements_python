@@ -5,7 +5,6 @@ from mailforce.client_operations.es.es_index_operations import insert_account_st
     insert_domains_stats, insert_message_roles, insert_runtime_stats
 from mailforce.client_operations.es.es_search_operations import get_last_runtime_date, get_message_roles, \
     get_aggregated_emails_by_account, search_accounts
-from mailforce.local_setup import setup
 from mailforce.models.domain.domains import Domains
 from mailforce.models.email.account.email_account import EmailAccount
 from mailforce.models.email.account.email_accounts import EmailAccounts
@@ -156,6 +155,16 @@ def _write_message_roles(message_roles_container: MessageRolesContainer):
     print(f'Wrote stats for {len(message_roles_container.message_roles)} message roles to {output_file_path}')
 
 
+def _local_setup():
+    with open('./resources/local_setup.json', 'r') as f:
+        content = f.read()
+        setup_configs = json.loads(content)
+        print('Setting the following keys:')
+        for key, value in setup_configs.items():
+            os.environ[key] = value
+            print(f'{key}={os.environ[key]}')
+
+
 if __name__ == "__main__":
-    setup()
+    _local_setup()
     _collect(None, None)

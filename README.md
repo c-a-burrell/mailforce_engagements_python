@@ -66,8 +66,8 @@ This project is designed to be run as a Lambda function, but can be executed as 
 ```commandline
 python3 ./main.py
 ```
-In order to run this locally, you will need to copy over  the secret values from the Function's environmental variables 
-into the mapping in `src/local_setup.py` *before* executing the above command.
+In order to run this locally, you will need to copy over the secret values from the Function's environmental variables 
+into the mapping in `src/resources/local_setup.json` *before* executing the above command.
 
 ### Lambada Payload
 It should be noted that the normal JSON payload of the trigger for this function will be an empty mapping:

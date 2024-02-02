@@ -1,0 +1,16 @@
+{
+  "SPACES_REGION": "",
+  "SPACES_ENDPOINT": "",
+  "SPACES_KEY": "",
+  "SPACES_SECRET": "",
+  "REDIS_PASSWORD": "",
+  "REDIS_USERNAME": "",
+  "REDIS_HOST": "",
+  "REDIS_PORT": "",
+  "REDIS_DB": "",
+  "SF_DOMAIN": "",
+  "SF_REFRESH_TOKEN": "",
+  "SF_CLIENT_ID": "",
+  "ELASTIC_PASSWORD": "",
+  "ELASTIC_CLOUD_ID": ""
+}
