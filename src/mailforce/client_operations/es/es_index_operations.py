@@ -1,3 +1,5 @@
+import datetime
+
 from elasticsearch import helpers
 
 from mailforce.client_operations.es import CLIENT
@@ -35,7 +37,10 @@ def insert_runtime_stats(runtime_stats: RuntimeStats) -> bool:
         'emails_processed': runtime_stats.emails_processed,
         'to_emails_processed': runtime_stats.to_emails_processed,
         'from_emails_processed': runtime_stats.from_emails_processed,
-        'cc_emails_processed': runtime_stats.cc_emails_processed
+        'cc_emails_processed': runtime_stats.cc_emails_processed,
+        'start_time': datetime.datetime.fromtimestamp(runtime_stats.start_time),
+        'end_time': datetime.datetime.fromtimestamp(runtime_stats.end_time),
+        'elapsed_time': runtime_stats.elapsed_time()
     }
     response = CLIENT.index(index=RUNTIME_STATS_INDEX, document=doc)
     return True if response and response['result'] == 'created' else False

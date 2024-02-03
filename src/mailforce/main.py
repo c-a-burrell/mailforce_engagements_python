@@ -1,4 +1,6 @@
+import json
 import os
+import time
 
 from mailforce import RESOURCES_PATH
 from mailforce.client_operations.es.es_index_operations import insert_account_stats, insert_account_interactions, \
@@ -60,6 +62,7 @@ def _get_response(event, context):
 def _collect(from_date: str = None,
              backfill_accounts: list[str] = None,
              excluded_accounts: list[str] = None):
+    start_time = time.time()
     last_runtime_date = from_date if from_date else get_last_runtime_date()
     print(f'Using last runtime date of {last_runtime_date}')
     accounts = backfill_accounts if backfill_accounts \
@@ -72,7 +75,7 @@ def _collect(from_date: str = None,
     message_roles = get_message_roles()
     message_roles_container = MessageRolesContainer(message_roles)
     _write_to_local(email_accounts, domains, message_roles_container)
-    runtime_stats = _write_to_es(email_accounts, domains, message_roles_container)
+    runtime_stats = _write_to_es(email_accounts, domains, message_roles_container, start_time)
     print('Done')
     return runtime_stats
 
@@ -105,12 +108,14 @@ def _write_to_local(email_accounts: EmailAccounts, domains: Domains, message_rol
         _write_message_roles(message_roles_container)
 
 
-def _write_to_es(email_accounts: EmailAccounts, domains: Domains, message_roles_container: MessageRolesContainer):
+def _write_to_es(email_accounts: EmailAccounts, domains: Domains, message_roles_container: MessageRolesContainer,
+                 start_time: float):
     insert_account_stats(email_accounts)
     insert_account_interactions(email_accounts)
     insert_domains_stats(domains)
     insert_message_roles(message_roles_container)
-    runtime_stats = RuntimeStats(run_date=now(), email_accounts=email_accounts, domains=domains)
+    runtime_stats = RuntimeStats(run_date=now(), email_accounts=email_accounts, domains=domains,
+                                 start_time=start_time, end_time=time.time())
     insert_runtime_stats(runtime_stats)
     return runtime_stats
 
