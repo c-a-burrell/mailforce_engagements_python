@@ -2,7 +2,7 @@ import os
 
 
 def _get_domains() -> list:
-    with open(f'{os.getcwd()}/resources/domains.txt', 'r') as f:
+    with open('../resources/domains.txt', 'r') as f:
         return list(map(lambda line: line.replace('\n', '').strip(), f.readlines()))
 
 

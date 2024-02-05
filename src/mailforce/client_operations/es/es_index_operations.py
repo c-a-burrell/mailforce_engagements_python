@@ -133,7 +133,7 @@ def insert_message_roles(message_roles_container: MessageRolesContainer):
             }
         }
 
-    return _perform_bulk_operations(message_roles_json, message_roles_container.message_roles)
+    return _perform_bulk_operations(message_roles_container.message_roles, message_roles_json)
 
 
 def insert_domains_stats(domains: Domains) -> bool:

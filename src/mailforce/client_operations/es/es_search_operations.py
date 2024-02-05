@@ -37,7 +37,9 @@ def get_last_runtime_date():
     }
     results = _search(query, RUNTIME_STATS_INDEX)
     if results and 'aggregations' in results:
-        return results['aggregations']['max_run_date']['value_as_string']
+        max_run_date = results['aggregations']['max_run_date']
+        if 'value_as_string' in max_run_date:
+            return max_run_date['value_as_string']
     else:
         return None
 

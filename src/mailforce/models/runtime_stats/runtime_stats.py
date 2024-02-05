@@ -15,25 +15,30 @@ class RuntimeStats:
         accounts = email_accounts.accounts
         self.run_date: str = run_date
         self.email_accounts_processed: int = len(email_accounts.accounts)
-        self.emails_processed: int = sum(list(map(lambda account: account.total_email_count, accounts)))
         self.domains_processed: int = len(domains.domains)
         self.cc_emails_processed: int = sum(list(map(lambda account: len(account.emails_cc), accounts)))
         self.to_emails_processed: int = sum(list(map(lambda account: len(account.emails_to), accounts)))
         self.from_emails_processed: int = sum(list(map(lambda account: len(account.emails_from), accounts)))
         self.start_time: float = start_time
         self.end_time: float = end_time
+        self.emails_processed: int = self.to_emails_processed + self.cc_emails_processed + self.from_emails_processed
 
     def set_times(self, start_time: float, end_time: float):
         self.start_time = start_time
         self.end_time = end_time
 
     def elapsed_time(self):
+        def proper_round(num, dec=0):
+            num = str(num)[:str(num).index('.') + dec + 2]
+            if num[-1] >= '5':
+                return float(num[:-2 - (not dec)] + str(int(num[-2 - (not dec)]) + 1))
+            return float(num[:-1])
         seconds = self.end_time - self.start_time
         if seconds < 60:
             return f'{seconds} seconds.'
         else:
-            minutes = seconds / 60
-            seconds = seconds % 60
+            minutes = proper_round(seconds / 60)
+            seconds = proper_round(seconds % 60)
             return f'{minutes} minutes, {seconds} seconds.'
 
     def __str__(self):

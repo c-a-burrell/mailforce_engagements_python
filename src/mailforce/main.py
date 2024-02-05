@@ -1,4 +1,3 @@
-import json
 import os
 import time
 
@@ -21,16 +20,16 @@ USE_ACCOUNTS_FILE: bool = False
 """ Whether to write all output to local files. Useful for local debugging."""
 WRITE_LOCAL_FILES: bool = False
 FROM_DATE_KEY: str = 'from_date'
-ACCOUNTS_KEY: str = 'backfill_accounts'
-EXCLUDE_ACCOUNTS_KEY: str = 'exclude_accounts'
+ACCOUNTS_TO_BACKFILL_KEY: str = 'backfill_accounts'
+ACCOUNTS_TO_EXCLUDE_KEY: str = 'exclude_accounts'
 
 
 def main(event, context):
     response = _get_response(event, context)
     try:
         from_date = event.get(FROM_DATE_KEY)
-        backfill_accounts = event.getACCOUNTS_KEY
-        excluded_accounts = event.get(EXCLUDE_ACCOUNTS_KEY)
+        backfill_accounts = event.get(ACCOUNTS_TO_BACKFILL_KEY)
+        excluded_accounts = event.get(ACCOUNTS_TO_EXCLUDE_KEY)
         runtime_stats = _collect(from_date=from_date,
                                  backfill_accounts=backfill_accounts,
                                  excluded_accounts=excluded_accounts)
@@ -63,7 +62,7 @@ def _collect(from_date: str = None,
              backfill_accounts: list[str] = None,
              excluded_accounts: list[str] = None):
     start_time = time.time()
-    last_runtime_date = from_date if from_date else get_last_runtime_date()
+    last_runtime_date = None if backfill_accounts else from_date if from_date else get_last_runtime_date()
     print(f'Using last runtime date of {last_runtime_date}')
     accounts = backfill_accounts if backfill_accounts \
         else _get_accounts_from_file() if USE_ACCOUNTS_FILE \
@@ -75,9 +74,11 @@ def _collect(from_date: str = None,
     message_roles = get_message_roles()
     message_roles_container = MessageRolesContainer(message_roles)
     _write_to_local(email_accounts, domains, message_roles_container)
-    runtime_stats = _write_to_es(email_accounts, domains, message_roles_container, start_time)
+    runtime_stats = RuntimeStats(run_date=None if backfill_accounts else now(),
+                                 email_accounts=email_accounts, domains=domains,
+                                 start_time=start_time, end_time=time.time())
+    _write_to_es(email_accounts, domains, message_roles_container,runtime_stats)
     print('Done')
-    return runtime_stats
 
 
 def _get_email_accounts(last_runtime_date: str, accounts: list[str]) -> EmailAccounts:
@@ -109,15 +110,12 @@ def _write_to_local(email_accounts: EmailAccounts, domains: Domains, message_rol
 
 
 def _write_to_es(email_accounts: EmailAccounts, domains: Domains, message_roles_container: MessageRolesContainer,
-                 start_time: float):
+                 runtime_stats: RuntimeStats):
     insert_account_stats(email_accounts)
     insert_account_interactions(email_accounts)
     insert_domains_stats(domains)
     insert_message_roles(message_roles_container)
-    runtime_stats = RuntimeStats(run_date=now(), email_accounts=email_accounts, domains=domains,
-                                 start_time=start_time, end_time=time.time())
     insert_runtime_stats(runtime_stats)
-    return runtime_stats
 
 
 def _write_account(account: str, email_account: EmailAccount):
@@ -160,16 +158,5 @@ def _write_message_roles(message_roles_container: MessageRolesContainer):
     print(f'Wrote stats for {len(message_roles_container.message_roles)} message roles to {output_file_path}')
 
 
-def _local_setup():
-    with open('./resources/local_setup.json', 'r') as f:
-        content = f.read()
-        setup_configs = json.loads(content)
-        print('Setting the following keys:')
-        for key, value in setup_configs.items():
-            os.environ[key] = value
-            print(f'{key}={os.environ[key]}')
-
-
 if __name__ == "__main__":
-    _local_setup()
     _collect(None, None)

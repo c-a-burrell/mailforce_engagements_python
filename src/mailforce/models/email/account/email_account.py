@@ -29,7 +29,7 @@ class EmailAccount:
         self.emails_to_count: int = len(self.emails_to)
         self.emails_from_count: int = len(self.emails_from)
         self.emails_cc_count: int = len(self.emails_cc)
-        self.total_email_count = self.emails_to_count + self.emails_cc_count + self.emails_from_count
+        self.total_email_count: len = self.emails_to_count + self.emails_cc_count + self.emails_from_count
 
     def id(self):
         """
