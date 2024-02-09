@@ -152,12 +152,9 @@ def _search_emails_by_account(account, from_date_inclusive=None, to_date_inclusi
                 ]
             }
         },
-        "sort": [
-            {"date": {
-                "order": "asc"
-            }}
-        ],
-        '_source': 'true'
+        "sort": [{"date": {"order": "asc"}}],
+        "fields": ["emailId", "threadId", "subject", "text.plain"],
+        '_source': 'false'
     }
     return _search(query, INDEX, search_after)
 

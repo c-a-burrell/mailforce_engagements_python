@@ -6,7 +6,7 @@ from mailforce.client_operations.salesforce import REDIS
 from mailforce.models.salesforce.insert_email_response import InsertEmailResponse
 
 EMAIL_API_VERSION: str = ''
-EMAIL_API_MODEL_NAME: str = ''
+EMAIL_API_MODEL_NAME: str = 'EmailMessage'
 REDIS_EMAIL_CACHE: str = 'emailIdCache'
 
 
@@ -21,8 +21,8 @@ def preprocess_emails(email_jsons: dict[str, any]) -> list[dict[str, any]]:
         :param cached_ids: All the IDs that have been cached in Redis.
         :return: True if this email Id is *not* cached.
         """
-        email_id = email_json.get('messageId', None)
-        return email_id not in cached_ids
+        email_id = email_json.get('messageId', ())
+        return email_id[0] not in cached_ids if len(email_id) > 0 else False
 
     cached_ids_from_redis: list[str] = REDIS.hkeys(name=REDIS_EMAIL_CACHE)
     emails = email_jsons['hits']['hits']
@@ -39,9 +39,24 @@ def insert_email(email_json: dict[str, any], config: MailforceConfigurations, at
             further processing.
     """
     url: str = f'https://${config.sf_domain}/services/data/${EMAIL_API_VERSION}/{EMAIL_API_MODEL_NAME}'
+    fields = email_json['fields']
+    email_body: str = fields['text.plain'][0]
+    email_subject: str = fields['subject'][0]
+    email_id: str = fields['emailId'][0]
+    email_thread_id: str = fields['threadId'][0]
+    email_message_id: str = fields['messageId'][0]
+    body: dict[str,str] = {
+        'EmailBody__c': email_body,
+        'Email_Thread__c': email_thread_id,
+        'EmailSubject__c': email_subject,
+        ''' Need to see if fields will be provided for either of these'''
+        '': email_message_id,
+        '': email_id
+    }
+
     response: dict[str, any] = issue_request(url=url,
                                              method='POST',
-                                             body=json.dumps(email_json),
+                                             body=json.dumps(body),
                                              content_type=CONTENT_JSON,
                                              attempt=1)
     success: bool = response.get('success', False)
