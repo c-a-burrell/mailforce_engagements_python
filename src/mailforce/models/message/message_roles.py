@@ -25,7 +25,8 @@ class MessageRoles:
             cc_addresses = message_role_json['cc.address']
             message_roles += _message_roles(cc_addresses, 'cc')
         self.roles: list[MessageRole] = list(filter(lambda role: is_valid_domain(role.domain), message_roles))
-        all_email_addresses: str = '+'.join(sorted(list(map(lambda message_role: message_role.email_address, self.roles))))
+        all_email_addresses: str = '+'.join(sorted(list(map(lambda message_role: message_role.email_address,
+                                                            self.roles))))
         self.id = deterministic_id(self.account, self.message_id, all_email_addresses)
 
     def to_csv_rows(self) -> list[str]:
@@ -34,4 +35,3 @@ class MessageRoles:
         """
         all_roles = map(lambda message_role: f'{message_role.to_csv_row()}\n', self.roles)
         return list(all_roles)
-

@@ -55,6 +55,7 @@ def get_aggregated_emails_by_account(account: str, last_runtime_date: str = None
     results = _search_aggregated_emails_by_account(account=account,
                                                    last_runtime_date=last_runtime_date)
     hits = results['hits']['hits']
+    # noinspection PyTypeChecker
     master_email_account: EmailAccount = None
     while len(hits) > 0:
         print(f'Processing {len(hits)} email search results for account {account}')

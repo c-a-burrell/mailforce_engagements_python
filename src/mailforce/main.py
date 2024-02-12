@@ -79,6 +79,7 @@ def _collect(from_date: str = None,
                                  start_time=start_time, end_time=time.time())
     _write_to_es(email_accounts, domains, message_roles_container,runtime_stats)
     print('Done')
+    return runtime_stats
 
 
 def _get_email_accounts(last_runtime_date: str, accounts: list[str]) -> EmailAccounts:

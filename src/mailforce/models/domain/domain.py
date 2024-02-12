@@ -10,6 +10,7 @@ DOMAIN_CSV_HEADER: str = ('email_address,cc Email Count,from Email Count,to Emai
 class Domain:
     """ Holds all the email data for a single domain. """
 
+    # noinspection PyTypeChecker
     def __init__(self, domain: str):
         """
         :param domain: Name of domain.
