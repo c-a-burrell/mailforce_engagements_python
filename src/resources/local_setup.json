@@ -1,0 +1,16 @@
+{
+  "SPACES_REGION": "sfo",
+  "SPACES_ENDPOINT": "sfo3.digitaloceanspaces.com",
+  "SPACES_KEY": "",
+  "SPACES_SECRET": "",
+  "REDIS_PASSWORD": "",
+  "REDIS_USERNAME": "",
+  "REDIS_HOST": "",
+  "REDIS_PORT": "",
+  "REDIS_DB": "",
+  "SF_DOMAIN": "",
+  "SF_REFRESH_TOKEN": "",
+  "SF_CLIENT_ID": "",
+  "ELASTIC_PASSWORD": "cJksFDtj6E1I7KmRyL2ahB4L",
+  "ELASTIC_CLOUD_ID": "Shinobi_Document_Store:dXMtd2VzdC0xLmF3cy5mb3VuZC5pbzo0NDMkODVhYjQ2MzIzN2QyNGE3YWFiNDgyODRiOWJkMzI3YTckOWFmMWUwYTBjMzI3NDA2ODkzNzI4YmU0MjY3NWFkOTI="
+}

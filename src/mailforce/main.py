@@ -1,26 +1,38 @@
 import os
+import time
 
-from models.domain.domains import Domains
-from utils.date_utils import now
-from client.es.index_client import insert_account_stats, insert_runtime_stats, insert_account_interactions, \
-    insert_domains_stats, insert_message_roles
-from client.es.search_client import get_emails_by_account, search_accounts, get_message_roles, get_last_runtime_date
-from models.email.account.email_accounts import EmailAccounts, EmailAccount
-from models.message.message_roles_container import MessageRolesContainer
-from models.runtime_stats.models_runtime_stats import RuntimeStats
+from mailforce import RESOURCES_PATH
+from mailforce.client_operations.es.es_index_operations import insert_account_stats, insert_account_interactions, \
+    insert_domains_stats, insert_message_roles, insert_runtime_stats
+from mailforce.client_operations.es.es_search_operations import get_last_runtime_date, get_message_roles, \
+    get_aggregated_emails_by_account, search_accounts
+from mailforce.models.domain.domains import Domains
+from mailforce.models.email.account.email_account import EmailAccount
+from mailforce.models.email.account.email_accounts import EmailAccounts
+from mailforce.models.message.message_roles_container import MessageRolesContainer
+from mailforce.models.runtime_stats.runtime_stats import RuntimeStats
+from mailforce.utils.date_utils import now
 
-RESOURCES_PATH = './resources'
-ACCOUNTS_PATH = f'{RESOURCES_PATH}/accounts'
-DOMAINS_PATH = f'{RESOURCES_PATH}/domains'
-USE_ACCOUNTS_FILE = False
-WRITE_LOCAL_FILES = False
+ACCOUNTS_PATH: str = f'{RESOURCES_PATH}/accounts'
+DOMAINS_PATH: str = f'{RESOURCES_PATH}/domains'
+""" Whether to use the local accounts file. If this is `False` then accounts will be retrieved from ES"""
+USE_ACCOUNTS_FILE: bool = False
+""" Whether to write all output to local files. Useful for local debugging."""
+WRITE_LOCAL_FILES: bool = False
+FROM_DATE_KEY: str = 'from_date'
+ACCOUNTS_TO_BACKFILL_KEY: str = 'backfill_accounts'
+ACCOUNTS_TO_EXCLUDE_KEY: str = 'exclude_accounts'
 
 
 def main(event, context):
     response = _get_response(event, context)
     try:
-        from_date = event['from_date'] if 'from_date' in event else None
-        runtime_stats = _collect(from_date)
+        from_date = event.get(FROM_DATE_KEY)
+        backfill_accounts = event.get(ACCOUNTS_TO_BACKFILL_KEY)
+        excluded_accounts = event.get(ACCOUNTS_TO_EXCLUDE_KEY)
+        runtime_stats = _collect(from_date=from_date,
+                                 backfill_accounts=backfill_accounts,
+                                 excluded_accounts=excluded_accounts)
         response['runtime_stats'] = str(runtime_stats)
     except Exception as e:
         response['error'] = str(e)
@@ -46,16 +58,26 @@ def _get_response(event, context):
     }
 
 
-def _collect(from_date: str = None):
-    last_runtime_date = from_date if from_date else get_last_runtime_date()
+def _collect(from_date: str = None,
+             backfill_accounts: list[str] = None,
+             excluded_accounts: list[str] = None):
+    start_time = time.time()
+    last_runtime_date = None if backfill_accounts else from_date if from_date else get_last_runtime_date()
     print(f'Using last runtime date of {last_runtime_date}')
-    accounts = _get_accounts_from_file() if USE_ACCOUNTS_FILE else _get_accounts_from_es()
-    email_accounts = _get_email_accounts(last_runtime_date, accounts)
+    accounts = backfill_accounts if backfill_accounts \
+        else _get_accounts_from_file() if USE_ACCOUNTS_FILE \
+        else _get_accounts_from_es()
+    filtered_accounts = list(filter(lambda account: account not in excluded_accounts, accounts)) if excluded_accounts \
+        else accounts
+    email_accounts = _get_email_accounts(last_runtime_date, filtered_accounts)
     domains = _get_domains(email_accounts)
     message_roles = get_message_roles()
     message_roles_container = MessageRolesContainer(message_roles)
     _write_to_local(email_accounts, domains, message_roles_container)
-    runtime_stats = _write_to_es(email_accounts, domains, message_roles_container)
+    runtime_stats = RuntimeStats(run_date=None if backfill_accounts else now(),
+                                 email_accounts=email_accounts, domains=domains,
+                                 start_time=start_time, end_time=time.time())
+    _write_to_es(email_accounts, domains, message_roles_container,runtime_stats)
     print('Done')
     return runtime_stats
 
@@ -63,7 +85,7 @@ def _collect(from_date: str = None):
 def _get_email_accounts(last_runtime_date: str, accounts: list[str]) -> EmailAccounts:
     email_accounts = EmailAccounts()
     for account in accounts:
-        email_account = get_emails_by_account(account=account, last_runtime_date=last_runtime_date)
+        email_account = get_aggregated_emails_by_account(account=account, last_runtime_date=last_runtime_date)
         email_accounts.add_account(email_account)
     return email_accounts
 
@@ -88,14 +110,13 @@ def _write_to_local(email_accounts: EmailAccounts, domains: Domains, message_rol
         _write_message_roles(message_roles_container)
 
 
-def _write_to_es(email_accounts: EmailAccounts, domains: Domains, message_roles_container: MessageRolesContainer):
+def _write_to_es(email_accounts: EmailAccounts, domains: Domains, message_roles_container: MessageRolesContainer,
+                 runtime_stats: RuntimeStats):
     insert_account_stats(email_accounts)
     insert_account_interactions(email_accounts)
     insert_domains_stats(domains)
     insert_message_roles(message_roles_container)
-    runtime_stats = RuntimeStats(run_date=now(), email_accounts=email_accounts, domains=domains)
     insert_runtime_stats(runtime_stats)
-    return runtime_stats
 
 
 def _write_account(account: str, email_account: EmailAccount):
@@ -139,4 +160,4 @@ def _write_message_roles(message_roles_container: MessageRolesContainer):
 
 
 if __name__ == "__main__":
-    _collect(None)
+    _collect(None, None)

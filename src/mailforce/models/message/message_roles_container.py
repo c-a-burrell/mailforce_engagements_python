@@ -1,4 +1,4 @@
-from models.message.message_roles import MessageRoles
+from mailforce.models.message.message_roles import MessageRoles
 
 MESSAGE_ROLES_HEADER: str = 'account,message_id,email_address,role'
 

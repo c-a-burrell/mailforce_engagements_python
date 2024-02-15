@@ -1,5 +1,5 @@
-from models.domain import Domain
-from models.email.engagement.email_engagement import EmailEngagement
+from mailforce.models.domain.domain import Domain
+from mailforce.models.email.engagement.email_engagement import EmailEngagement
 
 
 class Domains:

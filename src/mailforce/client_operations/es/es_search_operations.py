@@ -1,13 +1,29 @@
-from client.es import CLIENT
-from utils.date_utils import now
-from models.email.account.email_accounts import EmailAccount
-from models.message.message_roles_container import MessageRoles
+from mailforce.client_operations.es import CLIENT
+from mailforce.models.email.account.email_account import EmailAccount
+from mailforce.models.message.message_roles import MessageRoles
+from mailforce.utils.date_utils import now
 
 INDEX: str = 'search-shinobi-email'
 RUNTIME_STATS_INDEX: str = 'search-runtime-stats'
 MIN_DATE: str = '2023-01-01'
 MAX_DATE: str = '2023-12-30'
 BATCH_SIZE: int = 2500
+
+
+def get_emails_by_account(account: str, from_date_inclusive: str = None, to_date_inclusive: str = None) \
+        -> list[dict[str, any]]:
+    """
+    Returns the full content of the emails for a specific account.
+    :param account:
+    :param from_date_inclusive: The earliest data (inclusive).
+    :param to_date_inclusive: The latest date (inclusive). If this is not specified, then the current date is used.
+    :return: The full content of the emails from Elasticsearch.
+    """
+    results: list[dict[str,any]] = list()
+    all_results: list[dict[str, any]] = _search_emails_by_account(account, from_date_inclusive, to_date_inclusive)
+    for result in all_results:
+        results.append(result['hits']['hits'])
+    return results
 
 
 def get_last_runtime_date():
@@ -21,12 +37,14 @@ def get_last_runtime_date():
     }
     results = _search(query, RUNTIME_STATS_INDEX)
     if results and 'aggregations' in results:
-        return results['aggregations']['max_run_date']['value_as_string']
+        max_run_date = results['aggregations']['max_run_date']
+        if 'value_as_string' in max_run_date:
+            return max_run_date['value_as_string']
     else:
         return None
 
 
-def get_emails_by_account(account: str, last_runtime_date: str = None) -> EmailAccount:
+def get_aggregated_emails_by_account(account: str, last_runtime_date: str = None) -> EmailAccount:
     """ Gets all the aggregated `to`, `from` and `cc` email addresses for the account in question.
     If no results are returned, then an alternate index will be searched.
     :param account:
@@ -34,13 +52,13 @@ def get_emails_by_account(account: str, last_runtime_date: str = None) -> EmailA
     If not present, then all results in the index up until the present date will be fetched.
     :return: EmailAccount
     """
-    results = _search_emails_by_account(account=account,
-                                        last_runtime_date=last_runtime_date)
+    results = _search_aggregated_emails_by_account(account=account,
+                                                   last_runtime_date=last_runtime_date)
     hits = results['hits']['hits']
+    # noinspection PyTypeChecker
     master_email_account: EmailAccount = None
     while len(hits) > 0:
         print(f'Processing {len(hits)} email search results for account {account}')
-        print(results.keys())
         for agg in results['aggregations'].keys():
             remaining_docs = results['aggregations'][agg]['sum_other_doc_count']
             if remaining_docs and remaining_docs > 0:
@@ -53,9 +71,9 @@ def get_emails_by_account(account: str, last_runtime_date: str = None) -> EmailA
             master_email_account.append_emails(email_account)
         last_index = len(hits) - 1
         search_after = hits[last_index]['sort'][0]
-        results = _search_emails_by_account(account=account,
-                                            last_runtime_date=last_runtime_date,
-                                            search_after=search_after)
+        results = _search_aggregated_emails_by_account(account=account,
+                                                       last_runtime_date=last_runtime_date,
+                                                       search_after=search_after)
         hits = results['hits']['hits']
     return master_email_account
 
@@ -112,7 +130,37 @@ def _search_message_roles(last_runtime_date, search_after=None):
     return _search(query, INDEX, search_after)
 
 
-def _search_emails_by_account(account, last_runtime_date, search_after=None):
+def _search_emails_by_account(account, from_date_inclusive=None, to_date_inclusive=None, search_after=None):
+    def _date_aggregation():
+        date_aggregation = {
+            'format': "strict_date_optional_time"
+        }
+        if from_date_inclusive:
+            date_aggregation['gte'] = from_date_inclusive
+        if to_date_inclusive:
+            date_aggregation['lte'] = to_date_inclusive
+        else:
+            date_aggregation['lte'] = now()
+        return date_aggregation
+
+    query = {
+        'size': BATCH_SIZE,
+        'query': {
+            'bool': {
+                'must': [
+                    {'term': {'account': account}},
+                    {'range': {'date': _date_aggregation()}}
+                ]
+            }
+        },
+        "sort": [{"date": {"order": "asc"}}],
+        "fields": ["emailId", "threadId", "subject", "text.plain"],
+        '_source': 'false'
+    }
+    return _search(query, INDEX, search_after)
+
+
+def _search_aggregated_emails_by_account(account, last_runtime_date, search_after=None):
     def group_by_aggs(field):
         return {
             'terms': {'field': field, 'size': 10000},

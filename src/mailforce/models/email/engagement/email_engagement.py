@@ -1,5 +1,5 @@
-from utils.date_utils import to_simple_date_string
-from utils.hash_utils import deterministic_id
+from mailforce.utils.date_utils import to_simple_date_string
+from mailforce.utils.hash_utils import deterministic_id
 
 
 class EmailEngagement:

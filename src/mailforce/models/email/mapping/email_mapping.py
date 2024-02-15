@@ -1,5 +1,5 @@
-from models.email.engagement.email_engagement import EmailEngagement
-from utils.date_utils import get_earliest_date, get_latest_date
+from mailforce.models.email.engagement.email_engagement import EmailEngagement
+from mailforce.utils.date_utils import get_earliest_date, get_latest_date
 
 
 class EmailMapping:
@@ -22,7 +22,7 @@ class EmailMapping:
             * The earliest engagement date if the one present in the email object is earlier than the existing one;
             * The latest engagement date if the one present in the email object is later than the existing one; and,
             * The total email count
-        If for some reason there is an email address mismatch between the one that this mapping was initalized with and
+        If for some reason there is an email address mismatch between the one that this mapping was initialized with and
         the one that is being added, the existing mapping will not be updated.
          :param email: Email to be added.
         """
@@ -57,4 +57,3 @@ class EmailMapping:
         last_contact_date: str = self.latest_contact_date
         return (f'{self.email_address},{cc_count},{from_count},{to_count},{first_contact_date},{last_contact_date}'
                 f',{total}')
-

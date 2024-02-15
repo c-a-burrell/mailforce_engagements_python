@@ -1,17 +1,19 @@
+import datetime
+
 from elasticsearch import helpers
 
-from client.es import CLIENT
-from models.domain.domain import Domain
-from models.domain.domains import Domains
-from models.email.account.email_account import EmailAccount
-from models.email.account.email_accounts import EmailAccounts
-from models.email.engagement.email_engagement import EmailEngagement
-from models.email.mapping.email_mapping import EmailMapping
-from models.message.message_role import MessageRole
-from models.message.message_roles import MessageRoles
-from models.message.message_roles_container import MessageRolesContainer
-from models.runtime_stats.models_runtime_stats import RuntimeStats
-from utils.date_utils import now
+from mailforce.client_operations.es import CLIENT
+from mailforce.models.domain.domain import Domain
+from mailforce.models.domain.domains import Domains
+from mailforce.models.email.account.email_account import EmailAccount
+from mailforce.models.email.account.email_accounts import EmailAccounts
+from mailforce.models.email.engagement.email_engagement import EmailEngagement
+from mailforce.models.email.mapping.email_mapping import EmailMapping
+from mailforce.models.message.message_role import MessageRole
+from mailforce.models.message.message_roles import MessageRoles
+from mailforce.models.message.message_roles_container import MessageRolesContainer
+from mailforce.models.runtime_stats.runtime_stats import RuntimeStats
+from mailforce.utils.date_utils import now
 
 ACCOUNTS_STAT_INDEX: str = 'search-accounts_statistics_simple'
 ACCOUNTS_ENGAGEMENTS_INDEX: str = 'search-accounts-engagements'
@@ -35,7 +37,10 @@ def insert_runtime_stats(runtime_stats: RuntimeStats) -> bool:
         'emails_processed': runtime_stats.emails_processed,
         'to_emails_processed': runtime_stats.to_emails_processed,
         'from_emails_processed': runtime_stats.from_emails_processed,
-        'cc_emails_processed': runtime_stats.cc_emails_processed
+        'cc_emails_processed': runtime_stats.cc_emails_processed,
+        'start_time': datetime.datetime.fromtimestamp(runtime_stats.start_time),
+        'end_time': datetime.datetime.fromtimestamp(runtime_stats.end_time),
+        'elapsed_time': runtime_stats.elapsed_time()
     }
     response = CLIENT.index(index=RUNTIME_STATS_INDEX, document=doc)
     return True if response and response['result'] == 'created' else False
@@ -107,8 +112,8 @@ def insert_message_roles(message_roles_container: MessageRolesContainer):
     :param message_roles_container: Container holding all of the message roles.
     :return: Whether all message roles were inserted into ES.
     """
-    def message_roles_json(message_roles: MessageRoles):
 
+    def message_roles_json(message_roles: MessageRoles):
         def message_role_json(message_role: MessageRole):
             return {
                 'email_address': message_role.email_address,
@@ -122,15 +127,16 @@ def insert_message_roles(message_roles_container: MessageRolesContainer):
             '_id': message_roles.id,
             'doc': {
                 'message_id': message_roles.message_id,
-                'message_roles': list(map(message_role_json,message_roles.roles)),
-                'account': message_roles.account
+                'message_roles': list(map(message_role_json, message_roles.roles)),
+                'account': message_roles.account,
+                'date': RIGHT_NOW
             }
         }
 
-    return _perform_bulk_operations(message_roles_json, message_roles_container.message_roles)
+    return _perform_bulk_operations(message_roles_container.message_roles, message_roles_json)
 
 
-def insert_domains_stats(domains: Domains):
+def insert_domains_stats(domains: Domains) -> bool:
     """ Inserts domain level stats, namely for each email address associated with a domain how many emails were
     sent to or received from a registered Kunai account.
     :param domains: Domains to be inserted into ES.
@@ -170,7 +176,7 @@ def insert_domains_stats(domains: Domains):
     return _perform_bulk_operations(domains.domains.values(), domain_json)
 
 
-def _perform_bulk_operations(json_list, mapping_function):
+def _perform_bulk_operations(json_list, mapping_function) -> bool:
     actions = list(map(mapping_function, json_list))
     response = helpers.parallel_bulk(CLIENT, actions=actions)
     failures = 0

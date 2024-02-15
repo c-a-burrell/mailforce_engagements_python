@@ -1,11 +1,11 @@
 class MessageRole:
-    """ Holds the relationships between a given message Id in a specified account and an email address. """
+    """ Holds the relationships between a given message ID in a specified account and an email address. """
     def __init__(self, account: str, message_id: str, email_address: str, role: str):
         """
         :param account: Name of the account.
-        :param message_id: Id of the email message.
+        :param message_id: ID of the email message.
         :param email_address: Email address.
-        :param role: Relationship between the given email address and the message Id, namely whether it originated,
+        :param role: Relationship between the given email address and the message ID, namely whether it originated,
         directly received or was a CC recipient of the email.
         """
         self.account: str = account

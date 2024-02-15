@@ -1,5 +1,5 @@
-from models import ACCOUNTS_CSV_HEADER
-from models.email.account.email_account import EmailAccount
+from mailforce.models import ACCOUNTS_CSV_HEADER
+from mailforce.models.email.account.email_account import EmailAccount
 
 
 class EmailAccounts:
@@ -21,7 +21,3 @@ class EmailAccounts:
         all_accounts = map(lambda account: f'{account.to_account_csv_row()}\n', self.accounts)
         header_row = [f'{ACCOUNTS_CSV_HEADER}\n']
         return header_row + list(all_accounts)
-
-
-
-

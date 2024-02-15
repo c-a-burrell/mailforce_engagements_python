@@ -1,7 +1,7 @@
-from models import EMAIL_CSV_HEADER
-from models.email.engagement.email_engagement import EmailEngagement
-from utils.domain_utils import is_valid_domain
-from utils.hash_utils import deterministic_id
+from mailforce.models import EMAIL_CSV_HEADER
+from mailforce.models.email.engagement.email_engagement import EmailEngagement
+from mailforce.utils.domain_utils import is_valid_domain
+from mailforce.utils.hash_utils import deterministic_id
 
 
 class EmailAccount:
@@ -29,7 +29,7 @@ class EmailAccount:
         self.emails_to_count: int = len(self.emails_to)
         self.emails_from_count: int = len(self.emails_from)
         self.emails_cc_count: int = len(self.emails_cc)
-        self.total_email_count = self.emails_to_count + self.emails_cc_count + self.emails_from_count
+        self.total_email_count: len = self.emails_to_count + self.emails_cc_count + self.emails_from_count
 
     def id(self):
         """

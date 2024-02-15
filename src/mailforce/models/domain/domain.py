@@ -1,7 +1,7 @@
-from models.email.engagement.email_engagement import EmailEngagement
-from models.email.mapping.email_mapping import EmailMapping
-from utils.date_utils import get_earliest_date, get_latest_date
-from utils.hash_utils import deterministic_id
+from mailforce.models.email.engagement.email_engagement import EmailEngagement
+from mailforce.models.email.mapping.email_mapping import EmailMapping
+from mailforce.utils.date_utils import get_earliest_date, get_latest_date
+from mailforce.utils.hash_utils import deterministic_id
 
 DOMAIN_CSV_HEADER: str = ('email_address,cc Email Count,from Email Count,to Email Count,First Contact Date,'
                           'Last Contact Date,Total Emails')
@@ -10,6 +10,7 @@ DOMAIN_CSV_HEADER: str = ('email_address,cc Email Count,from Email Count,to Emai
 class Domain:
     """ Holds all the email data for a single domain. """
 
+    # noinspection PyTypeChecker
     def __init__(self, domain: str):
         """
         :param domain: Name of domain.

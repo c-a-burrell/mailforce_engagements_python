@@ -37,7 +37,7 @@ def get_earliest_date(first_date_str, second_date_str) -> str:
 
 def now():
     """
-    :return: Current date in YYYY-mm-DDTHH:MM:SS format
+    :return: Current date in YYYY-mm-DD'T'HH:MM:SS format
     """
     return datetime.now().strftime(DATE_FORMAT)
 
